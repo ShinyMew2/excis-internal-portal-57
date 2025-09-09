@@ -9,15 +9,12 @@ const PortalHeader = ({ onSearch }: PortalHeaderProps) => {
   return (
     <header className="bg-gradient-hero shadow-elevated">
       <div className="container mx-auto px-6 py-8">
-        <div className="flex items-start justify-between mb-8">
+        <div className="text-center mb-8">
           <img 
             src="/lovable-uploads/e5a60800-09c9-479b-96c5-638f55742306.png" 
             alt="Excis Logo" 
-            className="h-16 w-auto"
+            className="h-16 w-auto mx-auto mb-4"
           />
-        </div>
-        
-        <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">
             Company Portal
           </h1>
