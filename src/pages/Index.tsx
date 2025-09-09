@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video } from "lucide-react";
+import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video, ClipboardList } from "lucide-react";
 import PortalHeader from "@/components/PortalHeader";
 import AppGrid from "@/components/AppGrid";
 import { AppData } from "@/components/AppCard";
@@ -21,7 +21,7 @@ const Index = () => {
     {
       id: "excis-signin",
       name: "Excis Sign",
-      description: "Secure single sign-on portal for all Excis applications",
+      description: "Secure document signing platform",
       url: "https://docusign.excis.me",
       icon: Shield,
       color: "#f97316", // Excis Orange
@@ -107,6 +107,15 @@ const Index = () => {
       icon: Video,
       color: "#1e3a8a", // Excis Navy
       category: "communication"
+    },
+    {
+      id: "excis-logger",
+      name: "Excis Logger",
+      description: "Productivity tracking and GDPR compliance monitoring system",
+      url: "#",
+      icon: ClipboardList,
+      color: "#f97316", // Excis Orange
+      category: "productivity"
     }
   ];
 
