@@ -40,7 +40,7 @@ const Index = () => {
       id: "excis-hrms",
       name: "Excis HRMS",
       description: "Human resources management system for employee data and workflows",
-      url: "#",
+      url: "https://people.zoho.com",
       icon: Database,
       color: "#f97316", // Excis Orange
       category: "hr"
