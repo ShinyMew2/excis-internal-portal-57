@@ -58,7 +58,7 @@ const Index = () => {
       id: "excis-service-desk",
       name: "Excis Service Desk",
       description: "IT support and helpdesk for technical assistance and service requests",
-      url: "http://sd.excis.com",
+      url: "https://sd.excis.com",
       icon: Headphones,
       color: "#f97316", // Excis Orange
       category: "support"

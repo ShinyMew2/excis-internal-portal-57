@@ -21,7 +21,8 @@ const AppCard = ({ app, onClick }: AppCardProps) => {
     if (onClick) {
       onClick();
     } else {
-      window.open(app.url, '_blank');
+      const newWindow = window.open(app.url, '_blank', 'noopener,noreferrer');
+      if (newWindow) newWindow.opener = null;
     }
   };
 
