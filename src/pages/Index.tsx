@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText } from "lucide-react";
+import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video } from "lucide-react";
 import PortalHeader from "@/components/PortalHeader";
 import AppGrid from "@/components/AppGrid";
 import { AppData } from "@/components/AppCard";
@@ -89,6 +89,24 @@ const Index = () => {
       icon: ScrollText,
       color: "#1e3a8a", // Excis Navy
       category: "business"
+    },
+    {
+      id: "excis-cloud",
+      name: "Excis Cloud",
+      description: "Cloud storage and file sharing platform for secure document management",
+      url: "https://nextcloud.excis.com/",
+      icon: Cloud,
+      color: "#f97316", // Excis Orange
+      category: "productivity"
+    },
+    {
+      id: "excis-meeting",
+      name: "Excis Meeting",
+      description: "Video conferencing and online meeting platform for team collaboration",
+      url: "https://jitsi.excis.com/",
+      icon: Video,
+      color: "#1e3a8a", // Excis Navy
+      category: "communication"
     }
   ];
 
