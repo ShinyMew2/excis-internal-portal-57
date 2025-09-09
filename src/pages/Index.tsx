@@ -76,7 +76,7 @@ const Index = () => {
       id: "excis-shift",
       name: "Excis Shift",
       description: "Employee shift management and scheduling system",
-      url: "#",
+      url: "https://app.excis.me",
       icon: Clock,
       color: "#f97316", // Excis Orange
       category: "hr"
