@@ -131,7 +131,7 @@ const Index = () => {
               © 2024 Company Portal. All rights reserved.
             </p>
             <p className="text-muted-foreground text-xs mt-2">
-              Need help? Contact IT Support or visit the Help Center
+              Need help? Contact IT Support at <span className="font-medium">+44 13 44 93 09 00</span> or visit the Help Center
             </p>
           </div>
         </div>
