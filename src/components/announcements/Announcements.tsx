@@ -20,6 +20,10 @@ const Announcements: React.FC = () => {
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
+  // Refresh on mount to check for expired dismissals
+  useEffect(() => {
+    setRefreshKey(prev => prev + 1);
+  }, []);
 
   if (loading) {
     return (
@@ -44,9 +48,7 @@ const Announcements: React.FC = () => {
   };
 
   // Refresh on mount to check for expired dismissals
-  useEffect(() => {
-    setRefreshKey(prev => prev + 1);
-  }, []);
+  // moved refresh effect to top-level to satisfy Rules of Hooks
 
   if (displayedAnnouncements.length === 0) {
     return null;
