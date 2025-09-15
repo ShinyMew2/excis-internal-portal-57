@@ -3,35 +3,35 @@ import { Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AnnouncementCard from './AnnouncementCard';
 import AnnouncementsModal from './AnnouncementsModal';
-import { Announcement } from './types';
-import { getActiveAnnouncements, dismissAnnouncement, isAnnouncementActive, getStoredAnnouncements } from './utils';
+import { useAnnouncements } from '@/hooks/useAnnouncements';
+import { getActiveAnnouncements, dismissAnnouncement, isAnnouncementActive } from './utils';
 
 const Announcements: React.FC = () => {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const { announcements, loading } = useAnnouncements();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    const loadAnnouncements = () => {
-      const stored = getStoredAnnouncements();
-      setAnnouncements(stored);
-    };
-    
-    loadAnnouncements();
-    // Listen for changes in localStorage
+    // Force re-render when dismissed announcements change
     const handleStorageChange = () => {
-      loadAnnouncements();
+      setRefreshKey(prev => prev + 1);
     };
     
     window.addEventListener('storage', handleStorageChange);
-    // Also listen for custom events when announcements are updated
-    window.addEventListener('announcementsUpdated', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('announcementsUpdated', handleStorageChange);
-    };
-  }, [refreshKey]);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-6 py-6">
+        <div className="animate-pulse space-y-4">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-20 bg-muted rounded-lg"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   // Force re-render when dismissed announcements change
   const activeAnnouncements = getActiveAnnouncements(announcements);

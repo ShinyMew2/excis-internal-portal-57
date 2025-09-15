@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
+import { useAnnouncements } from '@/hooks/useAnnouncements';
 import { Announcement, AnnouncementSeverity } from '@/components/announcements/types';
 import { LogOut, Plus, Trash2, Edit, Calendar, Flag } from 'lucide-react';
 
@@ -17,7 +18,7 @@ export default function Admin() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const { announcements, loading, createAnnouncement, updateAnnouncement, deleteAnnouncement } = useAnnouncements();
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -34,28 +35,6 @@ export default function Admin() {
     if (!isAuthenticated) {
       navigate('/login');
       return;
-    }
-    
-    // Load announcements from localStorage
-    const saved = localStorage.getItem('admin_announcements');
-    if (saved) {
-      setAnnouncements(JSON.parse(saved));
-    } else {
-      // Initialize with mock data if none exists
-      const mockData = [
-        {
-          id: 'ann-1',
-          title: 'Scheduled Maintenance',
-          body: 'We will be performing scheduled maintenance on our servers this weekend from **Saturday 2 AM to 6 AM GMT**. During this time, some services may be temporarily unavailable.',
-          severity: 'warning' as AnnouncementSeverity,
-          pinned: true,
-          startAt: '2025-01-15T00:00:00Z',
-          endAt: '2025-12-15T23:59:59Z',
-          cta: { label: 'View maintenance details', href: '#maintenance' }
-        }
-      ];
-      setAnnouncements(mockData);
-      localStorage.setItem('admin_announcements', JSON.stringify(mockData));
     }
   }, [isAuthenticated, navigate]);
 
@@ -78,11 +57,10 @@ export default function Admin() {
     setIsEditing(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newAnnouncement: Announcement = {
-      id: isEditing || `ann-${Date.now()}`,
+    const announcementData = {
       title: formData.title,
       body: formData.body,
       severity: formData.severity,
@@ -95,20 +73,26 @@ export default function Admin() {
       } : undefined
     };
 
-    let updatedAnnouncements;
+    let result;
     if (isEditing) {
-      updatedAnnouncements = announcements.map(ann => 
-        ann.id === isEditing ? newAnnouncement : ann
-      );
-      toast({ title: 'Announcement updated successfully' });
+      result = await updateAnnouncement(isEditing, announcementData);
+      if (result.success) {
+        toast({ title: 'Announcement updated successfully' });
+      } else {
+        toast({ title: 'Error', description: result.error, variant: 'destructive' });
+      }
     } else {
-      updatedAnnouncements = [newAnnouncement, ...announcements];
-      toast({ title: 'Announcement created successfully' });
+      result = await createAnnouncement(announcementData);
+      if (result.success) {
+        toast({ title: 'Announcement created successfully' });
+      } else {
+        toast({ title: 'Error', description: result.error, variant: 'destructive' });
+      }
     }
 
-    setAnnouncements(updatedAnnouncements);
-    localStorage.setItem('admin_announcements', JSON.stringify(updatedAnnouncements));
-    resetForm();
+    if (result.success) {
+      resetForm();
+    }
   };
 
   const handleEdit = (announcement: Announcement) => {
@@ -125,11 +109,13 @@ export default function Admin() {
     setIsEditing(announcement.id);
   };
 
-  const handleDelete = (id: string) => {
-    const updatedAnnouncements = announcements.filter(ann => ann.id !== id);
-    setAnnouncements(updatedAnnouncements);
-    localStorage.setItem('admin_announcements', JSON.stringify(updatedAnnouncements));
-    toast({ title: 'Announcement deleted' });
+  const handleDelete = async (id: string) => {
+    const result = await deleteAnnouncement(id);
+    if (result.success) {
+      toast({ title: 'Announcement deleted' });
+    } else {
+      toast({ title: 'Error', description: result.error, variant: 'destructive' });
+    }
   };
 
   const getSeverityColor = (severity: AnnouncementSeverity) => {
@@ -140,7 +126,7 @@ export default function Admin() {
     }
   };
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || loading) {
     return null;
   }
 
