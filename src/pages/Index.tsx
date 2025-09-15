@@ -3,6 +3,7 @@ import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, 
 import PortalHeader from "@/components/PortalHeader";
 import AppGrid from "@/components/AppGrid";
 import { AppData } from "@/components/AppCard";
+import Announcements from "@/components/announcements/Announcements";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,6 +123,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <PortalHeader onSearch={setSearchQuery} />
+      <Announcements />
       <AppGrid apps={applications} searchQuery={searchQuery} />
       
       <footer className="bg-muted/30 border-t border-border mt-16">
