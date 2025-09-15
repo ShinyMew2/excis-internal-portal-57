@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video, ClipboardList } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video, ClipboardList, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import PortalHeader from "@/components/PortalHeader";
 import AppGrid from "@/components/AppGrid";
 import { AppData } from "@/components/AppCard";
@@ -128,13 +130,21 @@ const Index = () => {
       
       <footer className="bg-muted/30 border-t border-border mt-16">
         <div className="container mx-auto px-6 py-8">
-          <div className="text-center">
-            <p className="text-muted-foreground text-sm">
-              © 2024 Company Portal. All rights reserved.
-            </p>
-            <p className="text-muted-foreground text-xs mt-2">
-              Need help? Contact IT Support at <span className="font-medium">+44 13 44 93 09 00</span> or visit the Help Center
-            </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-muted-foreground text-sm">
+                © 2024 Company Portal. All rights reserved.
+              </p>
+              <p className="text-muted-foreground text-xs mt-2">
+                Need help? Contact IT Support at <span className="font-medium">+44 13 44 93 09 00</span> or visit the Help Center
+              </p>
+            </div>
+            <Link to="/login">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <Settings className="w-4 h-4" />
+                Admin
+              </Button>
+            </Link>
           </div>
         </div>
       </footer>

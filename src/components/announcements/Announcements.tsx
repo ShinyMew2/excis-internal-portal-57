@@ -3,13 +3,35 @@ import { Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AnnouncementCard from './AnnouncementCard';
 import AnnouncementsModal from './AnnouncementsModal';
-import { mockAnnouncements } from './data';
-import { getActiveAnnouncements, dismissAnnouncement, isAnnouncementActive } from './utils';
+import { Announcement } from './types';
+import { getActiveAnnouncements, dismissAnnouncement, isAnnouncementActive, getStoredAnnouncements } from './utils';
 
 const Announcements: React.FC = () => {
-  const [announcements, setAnnouncements] = useState(mockAnnouncements);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    const loadAnnouncements = () => {
+      const stored = getStoredAnnouncements();
+      setAnnouncements(stored);
+    };
+    
+    loadAnnouncements();
+    // Listen for changes in localStorage
+    const handleStorageChange = () => {
+      loadAnnouncements();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    // Also listen for custom events when announcements are updated
+    window.addEventListener('announcementsUpdated', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('announcementsUpdated', handleStorageChange);
+    };
+  }, [refreshKey]);
 
   // Force re-render when dismissed announcements change
   const activeAnnouncements = getActiveAnnouncements(announcements);

@@ -38,6 +38,14 @@ export const isAnnouncementActive = (announcement: Announcement): boolean => {
   return now >= startAt && (!endAt || now <= endAt);
 };
 
+/**
+ * Gets announcements from localStorage or returns empty array
+ */
+export function getStoredAnnouncements(): Announcement[] {
+  const stored = localStorage.getItem('admin_announcements');
+  return stored ? JSON.parse(stored) : [];
+}
+
 export const getActiveAnnouncements = (announcements: Announcement[]): Announcement[] => {
   return announcements
     .filter(isAnnouncementActive)
