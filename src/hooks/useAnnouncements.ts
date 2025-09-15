@@ -82,18 +82,25 @@ export function useAnnouncements() {
 
   const createAnnouncement = async (announcement: Omit<Announcement, 'id'>) => {
     try {
-      const { error } = await supabase.from('announcements').insert({
-        title: announcement.title,
-        body: announcement.body,
-        severity: announcement.severity,
-        pinned: announcement.pinned,
-        start_at: announcement.startAt,
-        end_at: announcement.endAt || null,
-        cta_label: announcement.cta?.label || null,
-        cta_href: announcement.cta?.href || null
+      // Get admin password from localStorage
+      const isAuthenticated = localStorage.getItem('admin_authenticated') === 'true';
+      if (!isAuthenticated) {
+        throw new Error('Admin authentication required');
+      }
+
+      const password = "admin_super_secure_password_2025_excis_portal_announcements_manager_123456789";
+      
+      const { data, error } = await supabase.functions.invoke('admin-auth', {
+        body: {
+          action: 'create',
+          password: password,
+          data: announcement
+        }
       });
 
       if (error) throw error;
+      if (!data.success) throw new Error(data.error || 'Failed to create announcement');
+      
       return { success: true };
     } catch (err) {
       console.error('Error creating announcement:', err);
@@ -103,18 +110,25 @@ export function useAnnouncements() {
 
   const updateAnnouncement = async (id: string, announcement: Omit<Announcement, 'id'>) => {
     try {
-      const { error } = await supabase.from('announcements').update({
-        title: announcement.title,
-        body: announcement.body,
-        severity: announcement.severity,
-        pinned: announcement.pinned,
-        start_at: announcement.startAt,
-        end_at: announcement.endAt || null,
-        cta_label: announcement.cta?.label || null,
-        cta_href: announcement.cta?.href || null
-      }).eq('id', id);
+      // Get admin password from localStorage
+      const isAuthenticated = localStorage.getItem('admin_authenticated') === 'true';
+      if (!isAuthenticated) {
+        throw new Error('Admin authentication required');
+      }
+
+      const password = "admin_super_secure_password_2025_excis_portal_announcements_manager_123456789";
+      
+      const { data, error } = await supabase.functions.invoke('admin-auth', {
+        body: {
+          action: 'update',
+          password: password,
+          data: { ...announcement, id }
+        }
+      });
 
       if (error) throw error;
+      if (!data.success) throw new Error(data.error || 'Failed to update announcement');
+      
       return { success: true };
     } catch (err) {
       console.error('Error updating announcement:', err);
@@ -124,8 +138,25 @@ export function useAnnouncements() {
 
   const deleteAnnouncement = async (id: string) => {
     try {
-      const { error } = await supabase.from('announcements').delete().eq('id', id);
+      // Get admin password from localStorage
+      const isAuthenticated = localStorage.getItem('admin_authenticated') === 'true';
+      if (!isAuthenticated) {
+        throw new Error('Admin authentication required');
+      }
+
+      const password = "admin_super_secure_password_2025_excis_portal_announcements_manager_123456789";
+      
+      const { data, error } = await supabase.functions.invoke('admin-auth', {
+        body: {
+          action: 'delete',
+          password: password,
+          data: { id }
+        }
+      });
+
       if (error) throw error;
+      if (!data.success) throw new Error(data.error || 'Failed to delete announcement');
+      
       return { success: true };
     } catch (err) {
       console.error('Error deleting announcement:', err);
