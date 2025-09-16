@@ -16,21 +16,29 @@ const PortalHeader = ({ onSearch }: PortalHeaderProps) => {
       <div className="container mx-auto px-6 py-8">
         {/* Top Navigation */}
         <div className="flex justify-end mb-6">
-          {isOnBlogPage ? (
-            <Link to="/">
-              <Button variant="ghost" className="text-white hover:bg-white/10 gap-2">
-                <Home className="w-4 h-4" />
-                Back to Portal
-              </Button>
-            </Link>
-          ) : (
+          <div className="flex flex-col gap-2">
+            {isOnBlogPage ? (
+              <Link to="/">
+                <Button variant="ghost" className="text-white hover:bg-white/10 gap-2 w-full">
+                  <Home className="w-4 h-4" />
+                  Back to Portal
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/blog">
+                <Button variant="ghost" className="text-white hover:bg-white/10 gap-2 w-full">
+                  <Newspaper className="w-4 h-4" />
+                  News
+                </Button>
+              </Link>
+            )}
             <a href="https://excis.com" target="_blank" rel="noopener noreferrer">
-              <Button variant="ghost" className="text-white hover:bg-white/10 gap-2">
+              <Button variant="ghost" className="text-white hover:bg-white/10 gap-2 w-full">
                 <Newspaper className="w-4 h-4" />
                 Excis site
               </Button>
             </a>
-          )}
+          </div>
         </div>
 
         <div className="text-center mb-8">
