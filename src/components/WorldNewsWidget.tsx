@@ -30,8 +30,8 @@ const WorldNewsWidget = () => {
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
   const { toast } = useToast();
 
-  // GNews.io API - Free tier allows 100 requests per day
-  const GNEWS_API_KEY = "cf20b5fc7c42de7c5bf7e7aaf7a2a01b"; // Free API key
+  // GNews.io API - Using your provided API key
+  const GNEWS_API_KEY = "d88039e4c79d44049fbe36c34a718a55";
   const GNEWS_API_URL = "https://gnews.io/api/v4/top-headlines";
 
   const fetchNews = async () => {
