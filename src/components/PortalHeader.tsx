@@ -51,7 +51,7 @@ const PortalHeader = ({ onSearch }: PortalHeaderProps) => {
             Excis Compliance
           </h1>
           <p className="text-white/90 text-lg">
-            Access all your workplace applications in one place
+            Your Global IT Solution
           </p>
         </div>
         
