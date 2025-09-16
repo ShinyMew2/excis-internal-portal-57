@@ -1,5 +1,7 @@
-import { Search } from "lucide-react";
+import { Search, Newspaper } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface PortalHeaderProps {
   onSearch?: (query: string) => void;
@@ -9,6 +11,16 @@ const PortalHeader = ({ onSearch }: PortalHeaderProps) => {
   return (
     <header className="bg-gradient-hero shadow-elevated">
       <div className="container mx-auto px-6 py-8">
+        {/* Top Navigation */}
+        <div className="flex justify-end mb-6">
+          <Link to="/blog">
+            <Button variant="ghost" className="text-white hover:bg-white/10 gap-2">
+              <Newspaper className="w-4 h-4" />
+              News
+            </Button>
+          </Link>
+        </div>
+
         <div className="text-center mb-8">
           <img 
             src="/lovable-uploads/e5a60800-09c9-479b-96c5-638f55742306.png" 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { useAnnouncements } from '@/hooks/useAnnouncements';
 import { Announcement, AnnouncementSeverity } from '@/components/announcements/types';
-import { LogOut, Plus, Trash2, Edit, Calendar, Flag } from 'lucide-react';
+import { LogOut, Plus, Trash2, Edit, Calendar, Flag, FileText, Megaphone } from 'lucide-react';
 
 export default function Admin() {
   const { isAuthenticated, logout } = useAuth();
@@ -135,13 +135,61 @@ export default function Admin() {
       <div className="container mx-auto p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold">Announcements Admin</h1>
-            <p className="text-muted-foreground">Manage portal announcements</p>
+            <h1 className="text-3xl font-bold">Admin Portal</h1>
+            <p className="text-muted-foreground">Manage portal content and announcements</p>
           </div>
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="w-4 h-4 mr-2" />
             Logout
           </Button>
+        </div>
+
+        {/* Admin Navigation Cards */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+          <Card className="hover:shadow-card-hover transition-shadow duration-300 cursor-pointer">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Megaphone className="h-6 w-6 text-primary" />
+                </div>
+                Announcements
+              </CardTitle>
+              <CardDescription>
+                Manage system-wide announcements and notifications
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm text-muted-foreground">
+                Create and manage company announcements
+              </div>
+            </CardContent>
+          </Card>
+
+          <Link to="/blog/admin">
+            <Card className="hover:shadow-card-hover transition-shadow duration-300 cursor-pointer">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <div className="p-2 bg-accent/10 rounded-lg">
+                    <FileText className="h-6 w-6 text-accent" />
+                  </div>
+                  Blog Management
+                </CardTitle>
+                <CardDescription>
+                  Create and manage company blog posts and news
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm text-muted-foreground">
+                  Write articles, manage content, and publish news
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold mb-2">Announcement Management</h2>
+          <p className="text-muted-foreground">Create and manage portal announcements below</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
