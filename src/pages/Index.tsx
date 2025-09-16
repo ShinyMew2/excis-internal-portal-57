@@ -7,6 +7,7 @@ import AppGrid from "@/components/AppGrid";
 import { AppData } from "@/components/AppCard";
 import Announcements from "@/components/announcements/Announcements";
 import WorldNewsWidget from "@/components/WorldNewsWidget";
+import Ticker from "@/components/Ticker";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -125,6 +126,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Ticker text="One World One Team" />
       <PortalHeader onSearch={setSearchQuery} />
       <Announcements />
       <AppGrid apps={applications} searchQuery={searchQuery} />
