@@ -29,7 +29,7 @@ serve(async (req) => {
     
     // Fetch news from NewsAPI.org
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=world -anime -manga -otaku&language=en&sortBy=publishedAt&pageSize=6&apiKey=${newsApiKey}`,
+      `https://newsapi.org/v2/everything?q=(world OR global) -anime -manga -otaku&language=en&sortBy=publishedAt&pageSize=20&apiKey=${newsApiKey}`,
       {
         headers: {
           'User-Agent': 'Supabase-Edge-Function',
@@ -58,21 +58,25 @@ serve(async (req) => {
     console.log(`Successfully fetched ${data.articles?.length || 0} articles`);
 
     if (data.status === 'ok' && data.articles) {
-      // Transform the data to match our interface
+      // Transform, validate, dedupe, and ensure exactly 6 items
       const transformedArticles = data.articles.map((article: any) => ({
         title: article.title,
         description: article.description,
         url: article.url,
         image: article.urlToImage,
         publishedAt: article.publishedAt,
-        source: {
-          name: article.source.name
-        }
+        source: { name: article.source.name }
       }));
+
+      const valid = transformedArticles.filter((a: any) => a.title && a.url);
+      const uniqueByUrl = Array.from(new Map(valid.map((a: any) => [a.url, a])).values());
+      const finalArticles = uniqueByUrl.slice(0, 6);
+
+      console.log(`Returning ${finalArticles.length} articles after filtering/dedup`);
 
       return new Response(
         JSON.stringify({ 
-          articles: transformedArticles,
+          articles: finalArticles,
           status: 'success'
         }), 
         {
