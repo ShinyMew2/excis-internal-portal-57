@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Clock, RefreshCw, Globe } from "lucide-react";
+import { ExternalLink, Clock, RefreshCw, Globe, Building2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface NewsArticle {
@@ -203,6 +203,15 @@ const WorldNewsWidget = () => {
             ))}
           </div>
           
+          <div className="pt-4 border-t border-border">
+            <Button asChild variant="outline" className="w-full">
+              <a href="https://excis.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                <Building2 className="w-4 h-4" />
+                Visit Excis Website
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
