@@ -33,7 +33,7 @@ const WorldNewsWidget = () => {
     try {
       // Fetch news from GNews.io API
       const response = await fetch(
-        `https://gnews.io/api/v4/top-headlines?token=${GNEWS_API_KEY}&lang=en&country=us&max=6&in=title,description&sortby=publishedAt`
+        `https://gnews.io/api/v4/top-headlines?apikey=${GNEWS_API_KEY}&lang=en&country=us&max=6&in=title,description&sortby=publishedAt`
       );
       
       if (!response.ok) {
