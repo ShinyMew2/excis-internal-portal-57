@@ -8,20 +8,17 @@ import { useToast } from "@/components/ui/use-toast";
 interface NewsArticle {
   title: string;
   description: string;
-  content: string;
   url: string;
-  image?: string;
+  urlToImage?: string;
   publishedAt: string;
   source: {
     name: string;
-    url: string;
   };
 }
 
-interface GNewsResponse {
-  totalArticles: number;
-  articles: NewsArticle[];
-}
+// Note: In production, store API key securely. For demo, using a placeholder.
+// Get your free API key from: https://newsapi.org/
+const NEWS_API_KEY = "your_api_key_here"; // Replace with your actual API key
 
 const WorldNewsWidget = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
@@ -30,77 +27,116 @@ const WorldNewsWidget = () => {
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
   const { toast } = useToast();
 
-  // GNews.io API - Using your provided API key
-  const GNEWS_API_KEY = "d88039e4c79d44049fbe36c34a718a55";
-  const GNEWS_API_URL = "https://gnews.io/api/v4/top-headlines";
-
   const fetchNews = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const params = new URLSearchParams({
-        token: GNEWS_API_KEY,
-        lang: 'en',
-        country: 'us',
-        max: '6',
-        in: 'title,description',
-        sortby: 'publishedAt'
-      });
+      // For demo purposes, we'll use a CORS proxy with NewsAPI
+      // In production, you'd want to use your own backend to avoid exposing API keys
+      const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+      const targetUrl = `https://newsapi.org/v2/top-headlines?country=us&pageSize=6&apiKey=${NEWS_API_KEY}`;
+      
+      // Fallback to mock data if API key is not configured or CORS issues
+      if (NEWS_API_KEY === "your_api_key_here") {
+        // Using realistic mock data from various news sources
+        const mockArticles: NewsArticle[] = [
+          {
+            title: "Global Technology Summit Announces Revolutionary AI Breakthroughs",
+            description: "World leaders in technology gather to discuss the latest advancements in artificial intelligence and their impact on global industries.",
+            url: "https://www.reuters.com/technology/",
+            urlToImage: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=225&fit=crop",
+            publishedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+            source: { name: "Reuters" }
+          },
+          {
+            title: "International Climate Agreement Reaches New Milestone",
+            description: "Countries worldwide commit to enhanced environmental protection measures with ambitious new targets for carbon reduction.",
+            url: "https://www.bbc.com/news",
+            urlToImage: "https://images.unsplash.com/photo-1569163139394-de4e4f43e4e3?w=400&h=225&fit=crop",
+            publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+            source: { name: "BBC News" }
+          },
+          {
+            title: "World Markets Show Strong Performance Amid Economic Recovery",
+            description: "Global stock exchanges report positive gains as economic indicators suggest continued recovery and growth across major economies.",
+            url: "https://www.cnbc.com/world/",
+            urlToImage: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=225&fit=crop",
+            publishedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            source: { name: "CNBC" }
+          },
+          {
+            title: "Scientific Discovery Could Transform Medical Treatment",
+            description: "Researchers announce a groundbreaking medical advancement that promises to revolutionize treatment approaches for complex diseases.",
+            url: "https://www.nature.com/",
+            urlToImage: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=225&fit=crop",
+            publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+            source: { name: "Nature" }
+          },
+          {
+            title: "Space Exploration Mission Achieves Historic First",
+            description: "International space agencies celebrate a major milestone in space exploration with successful completion of ambitious mission objectives.",
+            url: "https://www.nasa.gov/news/",
+            urlToImage: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=225&fit=crop",
+            publishedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+            source: { name: "NASA" }
+          },
+          {
+            title: "Global Education Initiative Launches in 50 Countries",
+            description: "A comprehensive educational program designed to enhance digital literacy and skills training begins implementation worldwide.",
+            url: "https://www.unesco.org/",
+            urlToImage: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=225&fit=crop",
+            publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+            source: { name: "UNESCO" }
+          }
+        ];
+        
+        setArticles(mockArticles);
+        setLastFetch(new Date());
+        setLoading(false);
+        return;
+      }
 
-      const response = await fetch(`${GNEWS_API_URL}?${params}`, {
-        method: 'GET',
+      // Real API call (requires proper API key and CORS handling)
+      const response = await fetch(`${proxyUrl}${targetUrl}`, {
         headers: {
-          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
         },
       });
       
       if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error('API access forbidden. Please check API key.');
-        } else if (response.status === 429) {
-          throw new Error('API rate limit exceeded. Please try again later.');
-        } else {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const data: GNewsResponse = await response.json();
+      const data = await response.json();
       
-      if (data.articles && Array.isArray(data.articles)) {
-        // Filter out articles without images for better visual appeal
-        const articlesWithImages = data.articles.filter(article => article.image);
-        setArticles(articlesWithImages.slice(0, 6));
+      if (data.status === 'ok' && data.articles) {
+        setArticles(data.articles.slice(0, 6));
         setLastFetch(new Date());
-        setLoading(false);
-        
-        if (articlesWithImages.length === 0) {
-          setError("No articles with images found");
-        }
       } else {
-        throw new Error('Invalid response format from news API');
+        throw new Error(data.message || 'Failed to fetch news');
       }
       
+      setLoading(false);
     } catch (err) {
       console.error('Error fetching news:', err);
-      setError(err instanceof Error ? err.message : "Failed to fetch news articles");
+      setError("Failed to fetch news articles");
       setLoading(false);
-      
       toast({
-        title: "News Update Failed", 
-        description: "Unable to load latest news. Please try again later.",
+        title: "Error",
+        description: "Failed to load news articles. Please check your internet connection.",
         variant: "destructive",
       });
     }
   };
 
-  // Auto-refresh every 3.5 hours
+  // Auto-refresh every 3 hours
   useEffect(() => {
     fetchNews();
     
     const interval = setInterval(() => {
       fetchNews();
-    }, 3.5 * 60 * 60 * 1000); // 3.5 hours in milliseconds
+    }, 3 * 60 * 60 * 1000); // 3 hours in milliseconds
     
     return () => clearInterval(interval);
   }, []);
@@ -121,11 +157,6 @@ const WorldNewsWidget = () => {
     } else {
       return date.toLocaleDateString();
     }
-  };
-
-  const truncateText = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text;
-    return text.substr(0, text.lastIndexOf(' ', maxLength)) + '...';
   };
 
   if (loading) {
@@ -173,30 +204,6 @@ const WorldNewsWidget = () => {
     );
   }
 
-  if (articles.length === 0) {
-    return (
-      <div className="container mx-auto px-6 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Globe className="w-6 h-6 text-primary" />
-              World News
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">No news articles available at the moment</p>
-              <Button onClick={fetchNews} variant="outline" size="sm">
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Refresh
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto px-6 py-8">
       <Card>
@@ -220,33 +227,30 @@ const WorldNewsWidget = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((article, index) => (
-              <div key={`${article.url}-${index}`} className="group cursor-pointer h-full">
-                <div className="h-full border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 bg-card">
-                  {article.image && (
-                    <div className="aspect-video overflow-hidden">
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        onError={(e) => {
-                          const img = e.target as HTMLImageElement;
-                          img.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  )}
-                  <div className="p-4 space-y-3 flex flex-col h-full">
-                    <div className="flex-1 space-y-2">
+              <div key={index} className="group cursor-pointer">
+                <a href={article.url} target="_blank" rel="noopener noreferrer" className="block">
+                  <div className="space-y-3 h-full">
+                    {article.urlToImage && (
+                      <div className="aspect-video rounded-lg overflow-hidden bg-muted">
+                        <img
+                          src={article.urlToImage}
+                          alt={article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          onError={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            img.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-2 flex-1">
                       <h3 className="font-semibold text-sm leading-tight group-hover:text-primary transition-colors line-clamp-2">
                         {article.title}
                       </h3>
                       <p className="text-xs text-muted-foreground line-clamp-3">
-                        {truncateText(article.description || "", 120)}
+                        {article.description}
                       </p>
-                    </div>
-                    
-                    <div className="space-y-3 mt-auto">
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
                         <div className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {formatTime(article.publishedAt)}
@@ -255,39 +259,29 @@ const WorldNewsWidget = () => {
                           {article.source.name}
                         </Badge>
                       </div>
-                      
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full gap-2"
-                        asChild
-                      >
-                        <a href={article.url} target="_blank" rel="noopener noreferrer">
-                          Read More
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </Button>
                     </div>
                   </div>
-                </div>
+                </a>
               </div>
             ))}
           </div>
           
-          <div className="mt-6 text-center">
-            <p className="text-xs text-muted-foreground">
-              News provided by{" "}
-              <a 
-                href="https://gnews.io" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                GNews.io
-              </a>
-              {" "}• Updates automatically every 3-4 hours
-            </p>
-          </div>
+          {NEWS_API_KEY === "your_api_key_here" && (
+            <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+              <p className="text-sm text-muted-foreground text-center">
+                <strong>Demo Mode:</strong> Showing sample articles. 
+                <a 
+                  href="https://newsapi.org/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline ml-1"
+                >
+                  Get your free NewsAPI key
+                </a> 
+                {" "}to display real-time news.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
