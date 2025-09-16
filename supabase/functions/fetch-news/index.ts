@@ -29,7 +29,7 @@ serve(async (req) => {
     
     // Fetch news from NewsAPI.org
     const response = await fetch(
-      `https://newsapi.org/v2/top-headlines?country=us&pageSize=6&apiKey=${newsApiKey}`,
+      `https://newsapi.org/v2/top-headlines?pageSize=6&apiKey=${newsApiKey}`,
       {
         headers: {
           'User-Agent': 'Supabase-Edge-Function',
