@@ -6,6 +6,7 @@ import PortalHeader from "@/components/PortalHeader";
 import AppGrid from "@/components/AppGrid";
 import { AppData } from "@/components/AppCard";
 import Announcements from "@/components/announcements/Announcements";
+import BBCNewsWidget from "@/components/BBCNewsWidget";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -127,6 +128,7 @@ const Index = () => {
       <PortalHeader onSearch={setSearchQuery} />
       <Announcements />
       <AppGrid apps={applications} searchQuery={searchQuery} />
+      <BBCNewsWidget />
       
       <footer className="bg-muted/30 border-t border-border mt-16">
         <div className="container mx-auto px-6 py-8">
