@@ -40,7 +40,7 @@ const PortalHeader = ({ onSearch }: PortalHeaderProps) => {
             className="h-16 w-auto mx-auto mb-4"
           />
           <h1 className="text-4xl font-bold text-white mb-2">
-            Company Portal
+            Excis Compliance
           </h1>
           <p className="text-white/90 text-lg">
             Access all your workplace applications in one place
