@@ -9,16 +9,15 @@ interface NewsArticle {
   title: string;
   description: string;
   url: string;
-  urlToImage?: string;
+  image?: string;
   publishedAt: string;
   source: {
     name: string;
   };
 }
 
-// Note: In production, store API key securely. For demo, using a placeholder.
-// Get your free API key from: https://newsapi.org/
-const NEWS_API_KEY = "your_api_key_here"; // Replace with your actual API key
+// GNews.io API integration
+const GNEWS_API_KEY = "d88039e4c79d44049fbe36c34a718a55";
 
 const WorldNewsWidget = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
@@ -32,77 +31,10 @@ const WorldNewsWidget = () => {
     setError(null);
     
     try {
-      // For demo purposes, we'll use a CORS proxy with NewsAPI
-      // In production, you'd want to use your own backend to avoid exposing API keys
-      const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-      const targetUrl = `https://newsapi.org/v2/top-headlines?country=us&pageSize=6&apiKey=${NEWS_API_KEY}`;
-      
-      // Fallback to mock data if API key is not configured or CORS issues
-      if (NEWS_API_KEY === "your_api_key_here") {
-        // Using realistic mock data from various news sources
-        const mockArticles: NewsArticle[] = [
-          {
-            title: "Global Technology Summit Announces Revolutionary AI Breakthroughs",
-            description: "World leaders in technology gather to discuss the latest advancements in artificial intelligence and their impact on global industries.",
-            url: "https://www.reuters.com/technology/",
-            urlToImage: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=225&fit=crop",
-            publishedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-            source: { name: "Reuters" }
-          },
-          {
-            title: "International Climate Agreement Reaches New Milestone",
-            description: "Countries worldwide commit to enhanced environmental protection measures with ambitious new targets for carbon reduction.",
-            url: "https://www.bbc.com/news",
-            urlToImage: "https://images.unsplash.com/photo-1569163139394-de4e4f43e4e3?w=400&h=225&fit=crop",
-            publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-            source: { name: "BBC News" }
-          },
-          {
-            title: "World Markets Show Strong Performance Amid Economic Recovery",
-            description: "Global stock exchanges report positive gains as economic indicators suggest continued recovery and growth across major economies.",
-            url: "https://www.cnbc.com/world/",
-            urlToImage: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=225&fit=crop",
-            publishedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-            source: { name: "CNBC" }
-          },
-          {
-            title: "Scientific Discovery Could Transform Medical Treatment",
-            description: "Researchers announce a groundbreaking medical advancement that promises to revolutionize treatment approaches for complex diseases.",
-            url: "https://www.nature.com/",
-            urlToImage: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=225&fit=crop",
-            publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-            source: { name: "Nature" }
-          },
-          {
-            title: "Space Exploration Mission Achieves Historic First",
-            description: "International space agencies celebrate a major milestone in space exploration with successful completion of ambitious mission objectives.",
-            url: "https://www.nasa.gov/news/",
-            urlToImage: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=225&fit=crop",
-            publishedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-            source: { name: "NASA" }
-          },
-          {
-            title: "Global Education Initiative Launches in 50 Countries",
-            description: "A comprehensive educational program designed to enhance digital literacy and skills training begins implementation worldwide.",
-            url: "https://www.unesco.org/",
-            urlToImage: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=225&fit=crop",
-            publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-            source: { name: "UNESCO" }
-          }
-        ];
-        
-        setArticles(mockArticles);
-        setLastFetch(new Date());
-        setLoading(false);
-        return;
-      }
-
-      // Real API call (requires proper API key and CORS handling)
-      const response = await fetch(`${proxyUrl}${targetUrl}`, {
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-      });
+      // Fetch news from GNews.io API
+      const response = await fetch(
+        `https://gnews.io/api/v4/top-headlines?token=${GNEWS_API_KEY}&lang=en&country=us&max=6&in=title,description&sortby=publishedAt`
+      );
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -110,11 +42,11 @@ const WorldNewsWidget = () => {
       
       const data = await response.json();
       
-      if (data.status === 'ok' && data.articles) {
-        setArticles(data.articles.slice(0, 6));
+      if (data.articles) {
+        setArticles(data.articles);
         setLastFetch(new Date());
       } else {
-        throw new Error(data.message || 'Failed to fetch news');
+        throw new Error(data.errors?.[0] || 'Failed to fetch news');
       }
       
       setLoading(false);
@@ -230,19 +162,19 @@ const WorldNewsWidget = () => {
               <div key={index} className="group cursor-pointer">
                 <a href={article.url} target="_blank" rel="noopener noreferrer" className="block">
                   <div className="space-y-3 h-full">
-                    {article.urlToImage && (
-                      <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-                        <img
-                          src={article.urlToImage}
-                          alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                          onError={(e) => {
-                            const img = e.target as HTMLImageElement;
-                            img.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                    )}
+                     {article.image && (
+                       <div className="aspect-video rounded-lg overflow-hidden bg-muted">
+                         <img
+                           src={article.image}
+                           alt={article.title}
+                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                           onError={(e) => {
+                             const img = e.target as HTMLImageElement;
+                             img.style.display = 'none';
+                           }}
+                         />
+                       </div>
+                     )}
                     <div className="space-y-2 flex-1">
                       <h3 className="font-semibold text-sm leading-tight group-hover:text-primary transition-colors line-clamp-2">
                         {article.title}
@@ -266,22 +198,6 @@ const WorldNewsWidget = () => {
             ))}
           </div>
           
-          {NEWS_API_KEY === "your_api_key_here" && (
-            <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-              <p className="text-sm text-muted-foreground text-center">
-                <strong>Demo Mode:</strong> Showing sample articles. 
-                <a 
-                  href="https://newsapi.org/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline ml-1"
-                >
-                  Get your free NewsAPI key
-                </a> 
-                {" "}to display real-time news.
-              </p>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>
