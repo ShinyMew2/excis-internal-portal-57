@@ -16,8 +16,8 @@ interface NewsArticle {
   };
 }
 
-// GNews.io API integration
-const GNEWS_API_KEY = "d88039e4c79d44049fbe36c34a718a55";
+import { supabase } from "@/integrations/supabase/client";
+
 
 const WorldNewsWidget = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
@@ -31,22 +31,27 @@ const WorldNewsWidget = () => {
     setError(null);
     
     try {
-      // Fetch news from GNews.io API
-      const response = await fetch(
-        `https://gnews.io/api/v4/top-headlines?apikey=${GNEWS_API_KEY}&lang=en&country=us&max=6&in=title,description&sortby=publishedAt`
-      );
+      console.log('Fetching news via Supabase edge function...');
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Call our Supabase edge function to fetch news
+      const { data, error } = await supabase.functions.invoke('fetch-news');
+      
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(error.message || 'Failed to fetch news');
       }
       
-      const data = await response.json();
+      if (data?.status === 'error') {
+        console.error('News API error:', data.error);
+        throw new Error(data.error || 'Failed to fetch news from API');
+      }
       
-      if (data.articles) {
+      if (data?.articles) {
+        console.log(`Successfully loaded ${data.articles.length} articles`);
         setArticles(data.articles);
         setLastFetch(new Date());
       } else {
-        throw new Error(data.errors?.[0] || 'Failed to fetch news');
+        throw new Error('No articles received from news API');
       }
       
       setLoading(false);
