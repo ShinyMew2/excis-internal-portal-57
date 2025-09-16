@@ -1,5 +1,5 @@
-import { Search, Newspaper } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Search, Newspaper, Home } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -8,17 +8,29 @@ interface PortalHeaderProps {
 }
 
 const PortalHeader = ({ onSearch }: PortalHeaderProps) => {
+  const location = useLocation();
+  const isOnBlogPage = location.pathname.startsWith('/blog');
+
   return (
     <header className="bg-gradient-hero shadow-elevated">
       <div className="container mx-auto px-6 py-8">
         {/* Top Navigation */}
         <div className="flex justify-end mb-6">
-          <Link to="/blog">
-            <Button variant="ghost" className="text-white hover:bg-white/10 gap-2">
-              <Newspaper className="w-4 h-4" />
-              News
-            </Button>
-          </Link>
+          {isOnBlogPage ? (
+            <Link to="/">
+              <Button variant="ghost" className="text-white hover:bg-white/10 gap-2">
+                <Home className="w-4 h-4" />
+                Back to Portal
+              </Button>
+            </Link>
+          ) : (
+            <Link to="/blog">
+              <Button variant="ghost" className="text-white hover:bg-white/10 gap-2">
+                <Newspaper className="w-4 h-4" />
+                News
+              </Button>
+            </Link>
+          )}
         </div>
 
         <div className="text-center mb-8">
