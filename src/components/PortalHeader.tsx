@@ -24,12 +24,12 @@ const PortalHeader = ({ onSearch }: PortalHeaderProps) => {
               </Button>
             </Link>
           ) : (
-            <Link to="/blog">
+            <a href="https://excis.com" target="_blank" rel="noopener noreferrer">
               <Button variant="ghost" className="text-white hover:bg-white/10 gap-2">
                 <Newspaper className="w-4 h-4" />
-                News
+                Excis site
               </Button>
-            </Link>
+            </a>
           )}
         </div>
 
