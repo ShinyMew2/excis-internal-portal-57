@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video, ClipboardList, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,15 @@ import Ticker from "@/components/Ticker";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showTicker, setShowTicker] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowTicker(false);
+    }, 3000); // Hide after 3 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Application configuration - easily editable for scalability
   const applications: AppData[] = [
@@ -126,7 +135,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Ticker text="One World One Team" />
+      {showTicker && <Ticker text="One World One Team" />}
       <PortalHeader onSearch={setSearchQuery} />
       <Announcements />
       <AppGrid apps={applications} searchQuery={searchQuery} />
