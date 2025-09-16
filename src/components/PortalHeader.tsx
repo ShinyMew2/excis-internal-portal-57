@@ -45,7 +45,7 @@ const PortalHeader = ({ onSearch }: PortalHeaderProps) => {
           <img 
             src="/lovable-uploads/e5a60800-09c9-479b-96c5-638f55742306.png" 
             alt="Excis Logo" 
-            className="h-16 w-auto mx-auto mb-4"
+            className="h-24 w-auto mx-auto mb-4"
           />
           <h1 className="text-4xl font-bold text-white mb-2">
             Excis Compliance
