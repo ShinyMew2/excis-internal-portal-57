@@ -11,12 +11,12 @@ import Ticker from "@/components/Ticker";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [showTicker, setShowTicker] = useState(true);
+  const [showTickerText, setShowTickerText] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShowTicker(false);
-    }, 3000); // Hide after 3 seconds
+      setShowTickerText(false);
+    }, 8000); // Hide text after 8 seconds
 
     return () => clearTimeout(timer);
   }, []);
@@ -135,7 +135,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {showTicker && <Ticker text="One World One Team" />}
+      <Ticker text={showTickerText ? "One World One Team" : ""} />
       <PortalHeader onSearch={setSearchQuery} />
       <Announcements />
       <AppGrid apps={applications} searchQuery={searchQuery} />
