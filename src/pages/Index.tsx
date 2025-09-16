@@ -11,15 +11,6 @@ import Ticker from "@/components/Ticker";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [showTickerText, setShowTickerText] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowTickerText(false);
-    }, 8000); // Hide text after 8 seconds
-
-    return () => clearTimeout(timer);
-  }, []);
 
   // Application configuration - easily editable for scalability
   const applications: AppData[] = [
@@ -135,7 +126,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Ticker text={showTickerText ? "One World One Team" : ""} />
+      <Ticker text="One World One Team" />
       <PortalHeader onSearch={setSearchQuery} />
       <Announcements />
       <AppGrid apps={applications} searchQuery={searchQuery} />

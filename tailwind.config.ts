@@ -110,7 +110,7 @@ export default {
 						height: '0'
 					}
 				},
-				'scroll': {
+				'scroll-once': {
 					'0%': { transform: 'translateX(100%)' },
 					'100%': { transform: 'translateX(-100%)' }
 				}
@@ -118,7 +118,7 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'scroll': 'scroll 15s linear infinite'
+				'scroll-once': 'scroll-once 15s ease-in-out forwards'
 			}
 		}
 	},
