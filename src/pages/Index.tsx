@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video, ClipboardList, Settings } from "lucide-react";
+import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video, ClipboardList, Settings, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PortalHeader from "@/components/PortalHeader";
 import AppGrid from "@/components/AppGrid";
@@ -130,6 +130,15 @@ const Index = () => {
       icon: Database,
       color: "#1e3a8a", // Excis Navy
       category: "business"
+    },
+    {
+      id: "it-roadmap",
+      name: "IT Road Map",
+      description: "Strategic IT planning and technology roadmap dashboard",
+      url: "https://excis-orbit.lovable.app/",
+      icon: Map,
+      color: "#f97316", // Excis Orange
+      category: "productivity"
     }
   ];
 
