@@ -48,7 +48,7 @@ const PortalHeader = ({ onSearch }: PortalHeaderProps) => {
             className="h-24 w-auto mx-auto mb-4"
           />
           <h1 className="text-4xl font-bold text-white mb-2">
-            Excis Compliance
+            Excis
           </h1>
           <p className="text-white/90 text-lg">
             Your Global IT Solution
