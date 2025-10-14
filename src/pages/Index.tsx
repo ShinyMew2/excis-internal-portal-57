@@ -155,7 +155,7 @@ const Index = () => {
           <div className="flex justify-between items-center">
             <div className="flex-1 text-center">
               <p className="text-muted-foreground text-sm">
-                © 2024 Excis Compliance. All rights reserved.
+                © 2024 Excis. All rights reserved.
               </p>
               <p className="text-muted-foreground text-xs mt-2">
                 Need help? Contact IT Support at <span className="font-medium">+44 13 44 93 09 00</span> or visit the Help Center
