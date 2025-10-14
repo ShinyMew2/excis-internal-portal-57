@@ -126,7 +126,7 @@ const Index = () => {
       id: "excis-erp",
       name: "Excis ERP",
       description: "Enterprise resource planning system for business operations management",
-      url: "#",
+      url: "https://cloud.excis.com",
       icon: Database,
       color: "#1e3a8a", // Excis Navy
       category: "business"
