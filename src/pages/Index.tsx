@@ -121,6 +121,15 @@ const Index = () => {
       icon: ClipboardList,
       color: "#f97316", // Excis Orange
       category: "productivity"
+    },
+    {
+      id: "excis-erp",
+      name: "Excis ERP",
+      description: "Enterprise resource planning system for business operations management",
+      url: "#",
+      icon: Database,
+      color: "#1e3a8a", // Excis Navy
+      category: "business"
     }
   ];
 
