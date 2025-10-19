@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video, ClipboardList, Settings, Map } from "lucide-react";
+import { Search, Mail, Users, FileText, Shield, Calendar, Database, Headphones, Phone, Clock, ScrollText, Cloud, Video, ClipboardList, Settings, Map, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PortalHeader from "@/components/PortalHeader";
 import AppGrid from "@/components/AppGrid";
@@ -138,6 +138,15 @@ const Index = () => {
       url: "https://excis-orbit.lovable.app/",
       icon: Map,
       color: "#f97316", // Excis Orange
+      category: "productivity"
+    },
+    {
+      id: "excis-ai",
+      name: "Excis AI",
+      description: "AI-powered assistant for enhanced productivity and automation",
+      url: "https://ai.excis.com/",
+      icon: Sparkles,
+      color: "#1e3a8a", // Excis Navy
       category: "productivity"
     }
   ];
