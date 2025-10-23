@@ -2,13 +2,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (password: string) => boolean;
+  login: (password: string) => Promise<boolean>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const ADMIN_PASSWORD = "admin_super_secure_password_2025_excis_portal_announcements_manager_123456789";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -20,13 +18,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = (password: string): boolean => {
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      localStorage.setItem('admin_authenticated', 'true');
-      return true;
+  const login = async (password: string): Promise<boolean> => {
+    try {
+      const response = await fetch(
+        `https://txfneraypshxauouxzra.supabase.co/functions/v1/admin-auth`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            action: 'verify',
+            password 
+          }),
+        }
+      );
+
+      if (response.ok) {
+        setIsAuthenticated(true);
+        localStorage.setItem('admin_authenticated', 'true');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Authentication error:', error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {

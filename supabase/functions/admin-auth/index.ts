@@ -6,8 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const ADMIN_PASSWORD = "admin_super_secure_password_2025_excis_portal_announcements_manager_123456789";
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -16,11 +14,12 @@ serve(async (req) => {
 
   try {
     const { action, password, data } = await req.json();
+    const ADMIN_PASSWORD = Deno.env.get('ADMIN_PASSWORD');
 
     console.log('Admin auth request:', { action, hasPassword: !!password });
 
     // Validate admin password
-    if (password !== ADMIN_PASSWORD) {
+    if (!ADMIN_PASSWORD || password !== ADMIN_PASSWORD) {
       console.log('Invalid admin password provided');
       return new Response(
         JSON.stringify({ error: 'Invalid admin credentials' }), 
@@ -39,6 +38,14 @@ serve(async (req) => {
     let result;
 
     switch (action) {
+      case 'verify':
+        // Simple password verification - returns success if password matches
+        console.log('Password verification successful');
+        return new Response(
+          JSON.stringify({ success: true }), 
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+
       case 'create':
         console.log('Creating announcement:', data);
         result = await supabase.from('announcements').insert({

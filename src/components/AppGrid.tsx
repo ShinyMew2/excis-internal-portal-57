@@ -7,11 +7,14 @@ interface AppGridProps {
 }
 
 const AppGrid = ({ apps, searchQuery }: AppGridProps) => {
+  // Sanitize search query to prevent XSS
+  const sanitizedQuery = searchQuery?.trim().replace(/[<>]/g, '') || '';
+  
   const filteredApps = apps.filter(app => 
-    !searchQuery || 
-    app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    app.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    app.category?.toLowerCase().includes(searchQuery.toLowerCase())
+    !sanitizedQuery || 
+    app.name.toLowerCase().includes(sanitizedQuery.toLowerCase()) ||
+    app.description.toLowerCase().includes(sanitizedQuery.toLowerCase()) ||
+    app.category?.toLowerCase().includes(sanitizedQuery.toLowerCase())
   );
 
   return (
@@ -21,8 +24,8 @@ const AppGrid = ({ apps, searchQuery }: AppGridProps) => {
           Your Applications
         </h2>
         <p className="text-muted-foreground">
-          {searchQuery 
-            ? `Found ${filteredApps.length} applications matching "${searchQuery}"`
+          {sanitizedQuery 
+            ? `Found ${filteredApps.length} applications matching "${sanitizedQuery}"`
             : `${apps.length} applications available`
           }
         </p>
@@ -34,7 +37,7 @@ const AppGrid = ({ apps, searchQuery }: AppGridProps) => {
         ))}
       </div>
       
-      {filteredApps.length === 0 && searchQuery && (
+      {filteredApps.length === 0 && sanitizedQuery && (
         <div className="text-center py-16">
           <div className="text-6xl mb-4 opacity-20">🔍</div>
           <h3 className="text-xl font-semibold text-muted-foreground mb-2">
