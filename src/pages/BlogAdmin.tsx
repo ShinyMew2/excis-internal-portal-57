@@ -14,7 +14,7 @@ import { toast } from "sonner";
 type BlogPost = Tables<"blog_posts">;
 
 const BlogAdmin = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, getPassword } = useAuth();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -43,12 +43,17 @@ const BlogAdmin = () => {
 
   const deletePost = async (id: string) => {
     try {
+      const password = getPassword();
+      if (!password) {
+        toast.error("Admin authentication required");
+        return;
+      }
       const { error } = await supabase.functions.invoke("admin-auth", {
         body: {
           action: "delete",
           table: "blog_posts",
           id,
-          password: localStorage.getItem("admin_password")
+          password
         }
       });
 
