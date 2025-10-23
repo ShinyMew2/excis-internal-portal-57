@@ -45,7 +45,7 @@ const BlogAdmin = () => {
     try {
       const password = getPassword();
       if (!password) {
-        toast.error("Admin authentication required");
+        toast.error("Please log out and log back in to enable delete functionality");
         return;
       }
       const { error } = await supabase.functions.invoke("admin-auth", {
