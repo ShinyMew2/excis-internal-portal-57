@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Announcement } from '@/components/announcements/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DatabaseAnnouncement {
   id: string;
@@ -34,6 +35,7 @@ export function useAnnouncements() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { getPassword } = useAuth();
 
   const fetchAnnouncements = async () => {
     try {
@@ -82,13 +84,10 @@ export function useAnnouncements() {
 
   const createAnnouncement = async (announcement: Omit<Announcement, 'id'>) => {
     try {
-      // Get admin password from localStorage
-      const isAuthenticated = localStorage.getItem('admin_authenticated') === 'true';
-      if (!isAuthenticated) {
+      const password = getPassword();
+      if (!password) {
         throw new Error('Admin authentication required');
       }
-
-      const password = "admin_super_secure_password_2025_excis_portal_announcements_manager_123456789";
       
       const { data, error } = await supabase.functions.invoke('admin-auth', {
         body: {
@@ -110,13 +109,10 @@ export function useAnnouncements() {
 
   const updateAnnouncement = async (id: string, announcement: Omit<Announcement, 'id'>) => {
     try {
-      // Get admin password from localStorage
-      const isAuthenticated = localStorage.getItem('admin_authenticated') === 'true';
-      if (!isAuthenticated) {
+      const password = getPassword();
+      if (!password) {
         throw new Error('Admin authentication required');
       }
-
-      const password = "admin_super_secure_password_2025_excis_portal_announcements_manager_123456789";
       
       const { data, error } = await supabase.functions.invoke('admin-auth', {
         body: {
@@ -138,13 +134,10 @@ export function useAnnouncements() {
 
   const deleteAnnouncement = async (id: string) => {
     try {
-      // Get admin password from localStorage
-      const isAuthenticated = localStorage.getItem('admin_authenticated') === 'true';
-      if (!isAuthenticated) {
+      const password = getPassword();
+      if (!password) {
         throw new Error('Admin authentication required');
       }
-
-      const password = "admin_super_secure_password_2025_excis_portal_announcements_manager_123456789";
       
       const { data, error } = await supabase.functions.invoke('admin-auth', {
         body: {
