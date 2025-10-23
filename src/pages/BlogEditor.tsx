@@ -17,7 +17,7 @@ import { toast } from "sonner";
 type BlogPost = Tables<"blog_posts">;
 
 const BlogEditor = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, getPassword } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
@@ -87,6 +87,12 @@ const BlogEditor = () => {
       return;
     }
 
+    const password = getPassword();
+    if (!password) {
+      toast.error("Admin authentication required");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -101,7 +107,7 @@ const BlogEditor = () => {
         action,
         table: "blog_posts",
         data: postData,
-        password: localStorage.getItem("admin_password")
+        password
       };
 
       if (isEditing) {
