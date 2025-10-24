@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { ArrowLeft, Save, Eye, Upload, X } from "lucide-react";
+import { ArrowLeft, Save, Eye, Upload, X, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,13 +32,15 @@ const BlogEditor = () => {
     tags: [] as string[],
     category: "",
     status: "draft" as "draft" | "published" | "archived",
-    author_name: "Admin"
+    author_name: "Admin",
+    pdf_url: ""
   });
 
   const [tagInput, setTagInput] = useState("");
   const [imageInput, setImageInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(isEditing);
+  const [pdfUploading, setPdfUploading] = useState(false);
 
   const categories = ["Technology", "Business", "Innovation", "Company News", "Industry Insights"];
 
@@ -70,7 +72,8 @@ const BlogEditor = () => {
         tags: data.tags || [],
         category: data.category || "",
         status: data.status as "draft" | "published" | "archived",
-        author_name: data.author_name
+        author_name: data.author_name,
+        pdf_url: data.pdf_url || ""
       });
     } catch (error) {
       console.error("Error fetching post:", error);
@@ -162,6 +165,63 @@ const BlogEditor = () => {
       ...prev,
       images: prev.images.filter(img => img !== imageToRemove)
     }));
+  };
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      toast.error("Please upload a PDF file");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("PDF file must be less than 10MB");
+      return;
+    }
+
+    setPdfUploading(true);
+
+    try {
+      const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+      const { data, error } = await supabase.storage
+        .from("newsletters")
+        .upload(fileName, file, {
+          cacheControl: "3600",
+          upsert: false
+        });
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("newsletters")
+        .getPublicUrl(data.path);
+
+      setFormData(prev => ({ ...prev, pdf_url: publicUrl }));
+      toast.success("PDF uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading PDF:", error);
+      toast.error("Failed to upload PDF");
+    } finally {
+      setPdfUploading(false);
+    }
+  };
+
+  const removePdf = async () => {
+    if (!formData.pdf_url) return;
+
+    try {
+      const path = formData.pdf_url.split("/newsletters/")[1];
+      if (path) {
+        await supabase.storage.from("newsletters").remove([path]);
+      }
+      setFormData(prev => ({ ...prev, pdf_url: "" }));
+      toast.success("PDF removed");
+    } catch (error) {
+      console.error("Error removing PDF:", error);
+      toast.error("Failed to remove PDF");
+    }
   };
 
   if (!isAuthenticated) {
@@ -289,6 +349,53 @@ const BlogEditor = () => {
                       rows={15}
                       className="font-mono"
                     />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* PDF Newsletter */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>PDF Newsletter</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="pdf-upload">Upload Newsletter PDF</Label>
+                    <div className="mt-2">
+                      {formData.pdf_url ? (
+                        <div className="flex items-center gap-2 p-3 bg-secondary rounded-lg">
+                          <FileText className="w-5 h-5 text-primary" />
+                          <span className="text-sm flex-1 truncate">
+                            {formData.pdf_url.split('/').pop()}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={removePdf}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id="pdf-upload"
+                            type="file"
+                            accept="application/pdf"
+                            onChange={handlePdfUpload}
+                            disabled={pdfUploading}
+                            className="flex-1"
+                          />
+                          {pdfUploading && (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Max file size: 10MB. PDF format only.
+                    </p>
                   </div>
                 </CardContent>
               </Card>

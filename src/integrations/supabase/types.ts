@@ -66,6 +66,7 @@ export type Database = {
           featured_image: string | null
           id: string
           images: string[] | null
+          pdf_url: string | null
           published_at: string | null
           slug: string
           status: string
@@ -83,6 +84,7 @@ export type Database = {
           featured_image?: string | null
           id?: string
           images?: string[] | null
+          pdf_url?: string | null
           published_at?: string | null
           slug: string
           status?: string
@@ -100,6 +102,7 @@ export type Database = {
           featured_image?: string | null
           id?: string
           images?: string[] | null
+          pdf_url?: string | null
           published_at?: string | null
           slug?: string
           status?: string
@@ -220,10 +223,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      generate_slug: {
-        Args: { title: string }
-        Returns: string
-      }
+      generate_slug: { Args: { title: string }; Returns: string }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -235,14 +235,8 @@ export type Database = {
         }
         Returns: boolean
       }
-      increment_post_views: {
-        Args: { post_id: string }
-        Returns: undefined
-      }
-      is_admin_authenticated: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      increment_post_views: { Args: { post_id: string }; Returns: undefined }
+      is_admin_authenticated: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

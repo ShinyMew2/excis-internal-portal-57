@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Calendar, User, Eye, ArrowLeft, Share2, Facebook, Twitter, Linkedin, Copy, Check } from "lucide-react";
+import { Calendar, User, Eye, ArrowLeft, Share2, Facebook, Twitter, Linkedin, Copy, Check, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -224,6 +224,33 @@ const BlogPost = () => {
                 </div>
               )}
             </header>
+
+            {/* PDF Newsletter Download */}
+            {post.pdf_url && (
+              <Card className="mb-8 bg-gradient-subtle">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <FileText className="w-6 h-6 text-primary" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold mb-1">Newsletter PDF</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Download this post as a PDF newsletter
+                      </p>
+                    </div>
+                    <Button asChild>
+                      <a href={post.pdf_url} target="_blank" rel="noopener noreferrer" className="gap-2">
+                        <Download className="w-4 h-4" />
+                        Download PDF
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Post Content */}
             <div className="prose prose-lg max-w-none">
